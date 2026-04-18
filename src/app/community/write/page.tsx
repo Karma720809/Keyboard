@@ -5,19 +5,7 @@ import { submitPost } from '../actions';
 export default function WritePage() {
   return (
     <main className="min-h-screen bg-background text-foreground relative selection:bg-accent selection:text-white">
-      <header className="fixed top-0 w-full z-50 apple-nav py-3 px-6 transition-all duration-300">
-        <div className="max-w-7xl mx-auto flex justify-between items-center w-full">
-          <Link href="/" className="flex items-center gap-2 text-white/90 hover:text-white transition-colors cursor-pointer">
-            <Command className="w-5 h-5" />
-            <span className="font-semibold text-lg tracking-tight">Aura Pro</span>
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link href="/community" className="hidden sm:block text-[13px] font-medium text-white hover:text-white transition-colors">
-              Community
-            </Link>
-          </div>
-        </div>
-      </header>
+
 
       <div className="pt-32 pb-16 px-6 max-w-3xl mx-auto">
         <div className="mb-8">
