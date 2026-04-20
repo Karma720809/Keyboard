@@ -68,3 +68,68 @@ CREATE TABLE comments (
 -- 인덱스 추가 (조회 성능 최적화)
 CREATE INDEX idx_posts_category_created ON posts(category_id, created_at DESC);
 CREATE INDEX idx_comments_post_created ON comments(post_id, created_at ASC);
+
+-- ============================================================
+-- 5. 상품 테이블 (Products) — 이커머스
+-- ============================================================
+CREATE TABLE products (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name             VARCHAR(255) NOT NULL,
+    slug             VARCHAR(255) UNIQUE NOT NULL,
+    description      TEXT,
+    price            NUMERIC(10, 2) NOT NULL,
+    compare_at_price NUMERIC(10, 2),                    -- 정가 (할인 전 가격, optional)
+    stock            INT DEFAULT 0,
+    thumbnail_url    TEXT,                              -- Supabase Storage public URL
+    images           TEXT[] DEFAULT '{}',              -- 추가 이미지 URL 배열
+    category         VARCHAR(100),
+    tags             TEXT[] DEFAULT '{}',
+    is_published     BOOLEAN DEFAULT FALSE,
+    created_at       TIMESTAMPTZ DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS 활성화
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+-- 누구나 출시된 상품 조회 가능
+CREATE POLICY "Public can read published products"
+    ON products FOR SELECT
+    USING (is_published = TRUE);
+
+-- 관리자는 모든 상품 CRUD 가능
+CREATE POLICY "Admins have full access to products"
+    ON products
+    USING (
+        EXISTS (
+            SELECT 1 FROM users
+            WHERE users.id = auth.uid() AND users.is_admin = TRUE
+        )
+    );
+
+-- updated_at 자동 갱신 함수
+CREATE OR REPLACE FUNCTION public.set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER products_updated_at
+  BEFORE UPDATE ON products
+  FOR EACH ROW EXECUTE PROCEDURE public.set_updated_at();
+
+-- 인덱스
+CREATE INDEX idx_products_slug        ON products(slug);
+CREATE INDEX idx_products_published   ON products(is_published, created_at DESC);
+CREATE INDEX idx_products_category    ON products(category);
+
+-- ============================================================
+-- 6. Supabase Storage — product-images 버킷 (수동 생성 필요)
+-- ============================================================
+-- Supabase 대시보드 > Storage > New Bucket
+-- 버킷명: product-images
+-- Public bucket: ✅ 활성화
+-- 경로 규칙: thumbnails/{product_id}/{filename}
+-- ============================================================

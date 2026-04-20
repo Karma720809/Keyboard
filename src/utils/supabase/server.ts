@@ -28,3 +28,17 @@ export async function createClient() {
     }
   )
 }
+
+// For use in generateStaticParams or other build-time/public contexts
+export function createSimpleClient() {
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_DATABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return [] },
+        setAll() {}
+      }
+    }
+  )
+}

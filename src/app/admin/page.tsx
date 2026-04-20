@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
-import { Users, FileText, Activity, TrendingUp, UserPlus } from 'lucide-react'
+import { Users, FileText, Activity, TrendingUp, UserPlus, ShoppingBag } from 'lucide-react'
 import { getPosts } from '@/lib/store'
 
 export default async function AdminDashboard() {
@@ -20,6 +20,11 @@ export default async function AdminDashboard() {
   // 3. Fetch Total Posts
   const { count: totalPosts } = await (supabase as any)
     .from('posts')
+    .select('*', { count: 'exact', head: true })
+
+  // 4. Fetch Total Products
+  const { count: totalProducts } = await (supabase as any)
+    .from('products')
     .select('*', { count: 'exact', head: true })
 
   const stats = [
@@ -46,6 +51,14 @@ export default async function AdminDashboard() {
       change: 'Migrated', 
       label: 'from JSON + DB',
       color: 'text-amber-400'
+    },
+    {
+      name: 'Products',
+      value: totalProducts?.toLocaleString() || '0',
+      icon: ShoppingBag,
+      change: 'Shop',
+      label: 'E-Commerce',
+      color: 'text-violet-400'
     },
   ]
 
@@ -112,6 +125,13 @@ export default async function AdminDashboard() {
                     <div className="flex items-center gap-3">
                         <Users className="w-5 h-5 text-blue-400" />
                         <span className="text-white text-sm font-medium">Manage Users</span>
+                    </div>
+                    <span className="text-white/20 text-xs">Explore &rarr;</span>
+                </a>
+                <a href="/admin/products" className="flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-[#7b61ff]/10 hover:border-[#7b61ff]/30 border border-transparent transition-all">
+                    <div className="flex items-center gap-3">
+                        <ShoppingBag className="w-5 h-5 text-violet-400" />
+                        <span className="text-white text-sm font-medium">상품 관리</span>
                     </div>
                     <span className="text-white/20 text-xs">Explore &rarr;</span>
                 </a>

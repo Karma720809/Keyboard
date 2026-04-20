@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, Users, FileText, Settings, LogOut, ChevronLeft } from 'lucide-react'
+import { LayoutDashboard, Users, FileText, ShoppingBag, ChevronLeft } from 'lucide-react'
 import { cn } from '@/lib/utils' // Assuming utils exist, I'll check or use template
 
 export default function AdminSidebar() {
@@ -10,6 +10,7 @@ export default function AdminSidebar() {
 
   const navItems = [
     { name: '대시보드', href: '/admin', icon: LayoutDashboard },
+    { name: '상품 관리', href: '/admin/products', icon: ShoppingBag },
     { name: '회원 관리', href: '/admin/users', icon: Users },
     { name: '게시물 관리', href: '/admin/posts', icon: FileText },
   ]

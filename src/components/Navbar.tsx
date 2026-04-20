@@ -15,6 +15,9 @@ export default async function Navbar() {
           <span className="font-semibold text-lg tracking-tight">Aura Pro</span>
         </Link>
         <div className="flex items-center gap-6">
+          <Link href="/shop" className="hidden sm:block text-[13px] font-medium text-white/70 hover:text-white transition-colors">
+            Shop
+          </Link>
           <Link href="/community" className="hidden sm:block text-[13px] font-medium text-white/70 hover:text-white transition-colors">
             Community
           </Link>

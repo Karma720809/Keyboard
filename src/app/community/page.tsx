@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { getPosts, Post } from '@/lib/store';
 import { Command, Plus } from 'lucide-react';
 
+export const revalidate = 60;
+
 export default async function CommunityPage({ searchParams }: { searchParams: { page?: string } }) {
   // searchParams in Next.js 15+ can be a promise, but for local simple use we can cast it if we need to
   const pageParam = await searchParams;

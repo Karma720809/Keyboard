@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server';
+import { createClient, createSimpleClient } from '@/utils/supabase/server';
 
 export interface Post {
   id: string; // Map from DB serial id (number) to string for UI consistency
@@ -8,8 +8,8 @@ export interface Post {
   createdAt: string; // Map from created_at
 }
 
-export async function getPosts(page: number = 1, limit: number = 20) {
-  const supabase = await createClient();
+export async function getPosts(page: number = 1, limit: number = 20, providedClient?: any) {
+  const supabase = providedClient || await createClient();
   
   const { data, count, error } = await (supabase as any)
     .from('posts')

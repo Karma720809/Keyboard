@@ -3,6 +3,18 @@ import { Command, ChevronLeft } from 'lucide-react';
 import { getPost } from '@/lib/store';
 import { notFound } from 'next/navigation';
 
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const { createSimpleClient } = await import('@/utils/supabase/server');
+  const { getPosts } = await import('@/lib/store');
+  const client = createSimpleClient();
+  const { items } = await getPosts(1, 20, client); // Pre-render last 20 posts
+  return items.map((post) => ({
+    id: post.id,
+  }));
+}
+
 export default async function DetailPage({ params }: { params: { id: string } }) {
   // params in Next 15+ can be semantic Promise, so await params
   const p = await params;
